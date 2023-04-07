@@ -75,14 +75,6 @@ class Vector2d(object):
 
 if __name__ == '__main__':
     v1 = Vector2d(3, 4)
-    typecode = 'd'
-
-    arr = array(typecode, [1, 2, 3])
-    byte_view = bytes([ord(typecode)]) + bytes(arr)
-    typecode2 = chr(byte_view[0])
-
-    print(*memoryview(byte_view[1:]).cast(typecode2))
-
     # print(v1.x, v1.y)
     #
     # x, y = v1
