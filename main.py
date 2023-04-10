@@ -1,47 +1,75 @@
+import functools
 import math
+import reprlib
 from array import array
-from collections.abc import Iterator
+from collections.abc import Iterable
+from operator import xor
+from random import random
 
 
-class Vector2d(object):
-    __match_args__ = ('x', 'y')
+class Vector:
+    __match_args__ = ("x", "y", "c", "d")
     typecode = 'd'
 
-    def __init__(self, x, y) -> None:
-        self.__x = float(x)
-        self.__y = float(y)
+    def __init__(self, iterable: Iterable):
+        self._components = list(iterable)
 
-    @property
-    def x(self):
-        return self.__x
+    def __len__(self):
+        return len(self._components)
 
-    @property
-    def y(self):
-        return self.__y
+    def __getitem__(self, key):
+        if isinstance(key, slice):
+            cls = self.__class__
+            return cls(self._components[key])
+        return self._components[key]
 
-    def __iter__(self) -> Iterator:
-        return (i for i in (self.x, self.y))
+    def __getattr__(self, item):
+        try:
+            pos = self.__match_args__.index(item)
+        except ValueError:
+            pos = -1
+        if 0 <= pos <= len(self.__match_args__)-1:
+            return self._components[pos]
+        raise ValueError(f"Attribute {item} doesn't exist")
 
-    def __repr__(self) -> str:
-        return '{}({!r}, {!r})'.format(self.__class__.__name__, *self)
+    def __setattr__(self, key, value):
+        if len(key) == 1:
+            cls_name = self.__class__.__name__
+            if key in self.__match_args__:
+                err = 'Key {attr_name!r} in immutable tuple.'
+            elif key.islower():
+                print(1)
+                err = "Cannot set attribute 'a' to 'z' in {cls_name!r}"
+            else:
+                err = ""
+            if err:
+                raise AttributeError(err.format(attr_name=key,
+                                                cls_name=cls_name))
+        super().__setattr__(key, value)
 
-    def __str__(self) -> str:
+    def __iter__(self):
+        return iter(self._components)
+
+    def __repr__(self):
+        repr_view = reprlib.repr(self._components)
+        components = repr_view[repr_view.find('[')+1:-1]
+        print(components)
+        return f"{self.__class__.__name__}({components})"
+
+    def __str__(self):
         return str(tuple(self))
 
-    def __bytes__(self) -> bytes:
-        return bytes([ord(self.typecode)]) + bytes(array(self.typecode, self))
+    def __eq__(self, other):
+        if len(self) != len(other):
+            return False
+        for a, b in zip(self, other):
+            if a != b:
+                return False
+        return True
 
-    def __eq__(self, other) -> bool:
-        return tuple(self) == tuple(other)
-
-    def __abs__(self):
-        return math.hypot(self.x, self.y)
-
-    def __bool__(self) -> bool:
-        return bool(abs(self))
-
-    def angle(self):
-        return math.atan2(self.x, self.y)
+    def __hash__(self):
+        hashes = (hash(x) for x in self._components)
+        return functools.reduce(xor, hashes, 0)
 
     def __format__(self, fmt_spec=''):
         if fmt_spec.endswith('p'):
@@ -54,57 +82,22 @@ class Vector2d(object):
         components = (format(a, fmt_spec) for a in coords)
         return outer_fmt.format(*components)
 
+    def __bytes__(self) -> bytes:
+        return bytes([ord(self.typecode)]) + bytes(array(self.typecode, self))
+
+    def __abs__(self):
+        return math.hypot(self.x, self.y)
+
+    def __bool__(self) -> bool:
+        return bool(abs(self))
+
     @classmethod
     def from_bytes(cls, octets):
         typecode = chr(octets[0])
         mem_view = memoryview(octets[1:]).cast(typecode)
         return cls(*mem_view)
 
-    def __hash__(self):
-        return hash((self.x, self.y))
-
-    def __complex__(self) -> complex:
-        return sum(complex(a) for a in self)
-
-    def __int__(self) -> int:
-        return sum(int(a) for a in self)
-
-    def __float__(self) -> float:
-        return sum(float(a) for a in self)
-
 
 if __name__ == '__main__':
-    v1 = Vector2d(3, 4)
-    # print(v1.x, v1.y)
-    #
-    # x, y = v1
-    # print(x, y)
-    # Vector2d(3.0, 4.0)
-    # v1_clone = eval(repr(v1))
-    # print(v1 == v1_clone)
-    # print(v1)
-    #
-    # octets = bytes(v1)
-    # print(octets)
-    # print(abs(v1))
-    # print(bool(v1), bool(Vector2d(0, 0)))
-    #
-    # v1_clone = Vector2d.from_bytes(bytes(v1))
-    # print(v1_clone)
-    # print(format(v1))
-    # print(format(v1, '.2f'))
-    # print(format(v1, '.3e'))
-    # print(Vector2d(0, 0).angle())
-    # print(Vector2d(1, 0).angle())
-    #
-    # epsilon = 10**-8
-    # print((abs(Vector2d(0, 1).angle() - math.pi/2) < epsilon))
-    # print(abs(Vector2d(1, 1).angle() - math.pi/4) < epsilon)
-    # print(format(Vector2d(1, 1), 'p'))
-    # print(format(Vector2d(1, 1), '.3ep'))
-    # print(format(Vector2d(1, 1), '0.5fp'))
-    #
-    # print(v1.x, v1.y)
-    # v1 = Vector2d(3, 4)
-    # v2 = Vector2d(3.1, 4.2)
-    # len({v1, v2})
+    vector1 = Vector(set(round(random()*100) for _ in range(100)))
+    print(vector1[4])
