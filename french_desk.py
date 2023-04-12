@@ -33,4 +33,5 @@ class FrenchDesk(abc.MutableSequence):
 if __name__ == '__main__':
     desk = FrenchDesk([1, 2, 3])
     desk.append(98)
+    print(FrenchDesk.__mro__)
     print(desk)
