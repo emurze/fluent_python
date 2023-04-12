@@ -94,8 +94,8 @@ class TombolaList(list):
     def loaded(self):
         return bool(self)
 
-    def inspect(self):
-        return tuple(self)
+    # def inspect(self):
+    #     return tuple(self)
 
 
 if __name__ == '__main__':
