@@ -1,4 +1,3 @@
-from collections import UserDict
 
 
 class Root:
@@ -47,7 +46,27 @@ class Leaf(B, A):
         super().pong()
 
 
+class U:
+    def ping(self):
+        print(f"method ping in U")
+        mro.pop(0)
+        print(f"{mro}\n")
+        super().ping()
+
+
+class LeftAU(U, A):
+    def ping(self):
+        print(f"method ping in {self.__class__.__name__}")
+        mro.pop(0)
+        print(f"{mro}\n")
+        super().ping()
+
+
+def print_mro(cls):
+    print(', '.join(c for c in cls.__mro__))
+
+
 if __name__ == '__main__':
-    leaf = Leaf()
-    mro = list(Leaf.__mro__)
+    leaf = LeftAU()
+    mro = list(LeftAU.__mro__)
     leaf.ping()
