@@ -1,12 +1,12 @@
-# from functools import lru_cache
-# from operator import attrgetter
-# from random import random
-# from typing import TypeVar
-#
-# from devtools.checking import checking
-# from collections import Counter, ChainMap
-#
-# l1 = [f"{random()*9:.0f}" for _ in range(10_000)]
+from functools import lru_cache
+from operator import attrgetter
+from random import random
+from typing import TypeVar
+
+from devtools.checking import checking
+from collections import Counter, ChainMap
+
+l1 = [f"{random()*9:.0f}" for _ in range(10_000)]
 # print(len(l1))
 #
 #
