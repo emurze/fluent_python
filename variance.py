@@ -36,4 +36,9 @@ if __name__ == '__main__':
     l1: list[float] = []
     l2: list[int] = []
     l3 = cast(list[int], l1)
-    print(l3 is l2)
+    # print(l3 is l2)
+
+    from collections import Counter
+
+    counter = Counter(a=4, b=4, c=-3)
+    print(-counter)

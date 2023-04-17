@@ -15,7 +15,8 @@ class Spam:
 
 
 class SubSpam(Spam):
-    ...
+    def __len__(self):
+        pass
 
 
 def is_unit(obj: SupportsAbs[float]):
@@ -23,5 +24,6 @@ def is_unit(obj: SupportsAbs[float]):
 
 
 if __name__ == '__main__':
-    print(hasattr(SubSpam, '__lt_'))
-    print(isinstance(SubSpam(), SupportsAbs))
+    # print(hasattr(SubSpam, '__lt_'))
+    # print(isinstance(SubSpam(), SupportsAbs))
+    print(SubSpam.__mro__)
