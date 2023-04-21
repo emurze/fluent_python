@@ -7,7 +7,17 @@ from typing import runtime_checkable, Protocol
 
 # l1 = namedtuple('Coords', 'lat lot', defaults=(1,))
 # print(l1(1)._fields)
-
+# def __str__(self) -> str:
+#     msg = self.__class__.__doc__ or ''
+#     if self.value:
+#         msg = msg.rstrip('.')
+#         if "'" in self.value:
+#             value = self.value
+#             # print(f"{msg}: {repr(self.value)}")
+#         else:
+#             value = repr(self.value)
+#         msg += f': {value}'
+#     return msg
 
 # class Coords(NamedTuple):
 #     lat: float
